@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "781521159682",
+    "firebase_url": "https://potencia-e55e5-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "potencia-e55e5",
+    "storage_bucket": "potencia-e55e5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:781521159682:android:c5703196ecf618bba2c91b",
+        "android_client_info": {
+          "package_name": "com.example.potencia"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "781521159682-j031sk994fv2pv4i7ai6u6tf0obcv8v1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.potencia",
+            "certificate_hash": "68608342003a157c87b1daf9969783f94fbe91d5"
+          }
+        },
+        {
+          "client_id": "781521159682-2068nvqgqn04a0hftcsttegaho6ufl9k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHE5FaZkN3ptVAONtfYOA3mzdJAapTsn4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "781521159682-2068nvqgqn04a0hftcsttegaho6ufl9k.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "781521159682-bedadb5fjm7ldrn8098tvmhnf1gp6avf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.potencia"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

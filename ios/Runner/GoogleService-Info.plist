@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>781521159682-bedadb5fjm7ldrn8098tvmhnf1gp6avf.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.781521159682-bedadb5fjm7ldrn8098tvmhnf1gp6avf</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDWa1inxX3KSbAvzA8pAisNagoSw7unDp8</string>
+	<key>GCM_SENDER_ID</key>
+	<string>781521159682</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.potencia</string>
+	<key>PROJECT_ID</key>
+	<string>potencia-e55e5</string>
+	<key>STORAGE_BUCKET</key>
+	<string>potencia-e55e5.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:781521159682:ios:dd10a756d359fe61a2c91b</string>
+	<key>DATABASE_URL</key>
+	<string>https://potencia-e55e5-default-rtdb.asia-southeast1.firebasedatabase.app</string>
+</dict>
+</plist>
