@@ -82,7 +82,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
   void sendData(String height, String weight, String age, String gender) async{
     print("Posting");
     var response = await http.post(
-      Uri.parse('${api}user/details'),
+      Uri.parse(signUpRoute),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -216,7 +216,6 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                     ),
                   ],
                 )
-
 
               ],
             ),

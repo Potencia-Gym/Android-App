@@ -1,8 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
-import 'package:potencia/components/exercise_container.dart';
-import 'package:potencia/components/streak_container.dart';
 import 'package:potencia/constants/colors.dart';
 import 'package:potencia/fragments/dailygoals_fragment.dart';
 import 'package:potencia/fragments/profile_fragment.dart';
@@ -22,21 +21,24 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
 
   int pageIndex = 0;
+  User? user;
+
+  void getCurrentUser() async{
+    user = await FirebaseAuth.instance.currentUser;
+  }
 
   Widget getFragment(){
     switch(pageIndex){
       case 0:
-        return WorkoutFragment();
+        return WorkoutFragment(uid: 'CZkzL2ox5nVqZ7QIsnxwUY7ISKJ3');
       case 1:
         return DailyGoalsFragment();
       case 2:
-        return ProfileFragment();
+        return ProfileFragment(uid: user!.uid, name: user!.displayName, email: user!.email,);
       default:
         return Center(
               child: Column(
                 children: [
-                  //ExerciseContainer(),
-                  StreakContainer(),
                   TextButton(
                     onPressed: () async{
                       await signOutWithGoogle();
@@ -53,6 +55,13 @@ class _HomeScreenState extends State<HomeScreen> {
         );
     }
 
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getCurrentUser();
   }
 
   @override

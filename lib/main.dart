@@ -7,6 +7,7 @@ import 'package:potencia/screens/home_screen.dart';
 import 'package:potencia/screens/login_screen.dart';
 import 'package:potencia/screens/splash_screen.dart';
 import 'package:potencia/screens/testing_screen.dart';
+import 'package:potencia/screens/video_stream.dart';
 import 'package:potencia/screens/workout_details.dart';
 import 'package:potencia/services/routes.dart';
 

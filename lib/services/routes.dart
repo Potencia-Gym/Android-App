@@ -25,7 +25,6 @@ class RouteGenerator{
         return errorRoute();
     }
 
-
   }
 
   static Route<dynamic> errorRoute(){
@@ -50,9 +49,6 @@ class RouteArguments{
   late String name;
   late String email;
   late String uid;
-
   RouteArguments(this.arg);
-
-
 
 }

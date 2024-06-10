@@ -41,6 +41,16 @@ final ButtonStyle flatButtonStyle = OutlinedButton.styleFrom(
   textStyle: GoogleFonts.poppins(textStyle:const TextStyle(fontSize: 16, color: primaryColor,  fontWeight: FontWeight.w500)),
 );
 
+final ButtonStyle selectedButtonStyle = OutlinedButton.styleFrom(
+  //0xFFFBFbFB
+  backgroundColor: primaryColor,
+  side: const BorderSide(color: primaryColor, width: 1),
+  shape: const RoundedRectangleBorder(
+    borderRadius: BorderRadius.all(Radius.circular(8)),
+  ),
+  textStyle: GoogleFonts.poppins(textStyle:const TextStyle(fontSize: 16, color: primaryColor,  fontWeight: FontWeight.w500)),
+);
+
 final ButtonStyle roundButtonStyle = OutlinedButton.styleFrom(
   //0xFFFBFbFB
   backgroundColor: blackColor,

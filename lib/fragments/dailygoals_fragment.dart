@@ -12,10 +12,11 @@ class _DailyGoalFragmentState extends State<DailyGoalsFragment> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Column(
-        children: [
-          StreakContainer(),
-        ],
+      child: ListView.builder(
+        itemCount: 4,
+        itemBuilder: (context, index){
+          return StreakContainer();
+        },
       ),
 
     );

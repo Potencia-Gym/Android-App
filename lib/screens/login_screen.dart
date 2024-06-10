@@ -21,8 +21,6 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
 
-
-
   void getCurrentUser() async{
     User? user = await FirebaseAuth.instance.currentUser;
     print(user?.displayName);
@@ -49,19 +47,19 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void redirect(String? uid, String? name, String? email) async{
     var response = await http.post(
-      Uri.parse('${api}user'),
+      Uri.parse(signInRoute),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, String?>{
-        'uid': uid,
+        'uid': 'CZkzL2ox5nVqZ7QIsnxwUY7ISKJ3',
         'name': (name!=null)?name:'User',
         'email': email
       }),
     );
     print(response.statusCode);
-    print(response.body);
     var body = jsonDecode(response.body);
+    print(body['information'].toString());
     if (response.statusCode==200){
       Navigator.pushReplacementNamed(context, '/home', arguments: RouteArguments(0));
     }

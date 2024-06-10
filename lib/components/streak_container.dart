@@ -29,7 +29,7 @@ class StreakContainer extends StatelessWidget {
                     children: [
                       Text('Push Ups', style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 32, color: tertiaryColor)),),
                       // Status
-                      Text("Reps: 3 x 10", style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 16, color: Colors.white70))),
+                      Text("Reps: 3 x 10", style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 16, color: yellowColor))),
                     ],
                   ),
                   IconButton(
