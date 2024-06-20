@@ -49,6 +49,7 @@ dependencies:
   socket_io_client: ^2.0.3+1
   image: ^4.1.7
   image_picker: ^1.0.6
+#  camera_android_camerax: ^0.6.5+6
 
 dev_dependencies:
   flutter_test:

@@ -12,7 +12,8 @@ import 'package:curved_labeled_navigation_bar/curved_navigation_bar.dart';
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar_item.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  String uid;
+  HomeScreen({super.key, required this.uid});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -22,9 +23,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
   int pageIndex = 0;
   User? user;
+  late String uid;
+
+  PageController controller = PageController();
 
   void getCurrentUser() async{
     user = await FirebaseAuth.instance.currentUser;
+    print(user!.uid);
+    uid = user!.uid;
   }
 
   Widget getFragment(){
@@ -61,7 +67,8 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getCurrentUser();
+    uid = widget.uid;
+    // getCurrentUser();
   }
 
   @override
@@ -72,9 +79,11 @@ class _HomeScreenState extends State<HomeScreen> {
           backgroundColor: blackColor,
 
           bottomNavigationBar: CurvedNavigationBar(
-            animationDuration: Duration(milliseconds: 100),
+            animationDuration: Duration(milliseconds: 200),
+            animationCurve: Curves.bounceOut,
             backgroundColor: blackColor,
             color: primaryColor,
+            index: pageIndex,
             buttonBackgroundColor: primaryColor,
             items: const [
               CurvedNavigationBarItem(
@@ -95,10 +104,27 @@ class _HomeScreenState extends State<HomeScreen> {
               setState(() {
                 pageIndex = index;
               });
+              controller.animateToPage(pageIndex, duration: Duration(milliseconds: 200), curve: Curves.bounceOut);
             },
           ),
 
-          body: getFragment(),
+          // body: getFragment(),
+          body: PageView(
+            controller: controller,
+            onPageChanged: (index){
+              setState(() {
+                pageIndex = index;
+              });
+            },
+            children: [
+              WorkoutFragment(uid: uid),
+
+              DailyGoalsFragment(),
+
+              // ProfileFragment(uid: uid, name: user!.displayName, email: user!.email,),
+
+            ],
+          ),
         )
     );
   }

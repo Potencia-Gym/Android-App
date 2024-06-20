@@ -115,109 +115,125 @@ class _WorkoutFragmentState extends State<WorkoutFragment> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-          height: 60,
-          decoration: BoxDecoration(
-            color: secondaryColor,
-            borderRadius: BorderRadius.all(Radius.circular(24))
-          ),
-          child: ListView.builder(
-            itemCount: days.length,
-            scrollDirection: Axis.horizontal,
-            controller: scrollController,
-            itemBuilder: (BuildContext context, index){
-              return GestureDetector(
-                onTap: (){
-                  setState(() {
-                    selectedDay = index;
-
-                  });
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: (index==selectedDay) ?primaryColor: secondaryColor,
-                      borderRadius: (index==0) ?
-                      BorderRadius.only(topLeft: Radius.circular(24), bottomLeft: Radius.circular(24)) :
-                      (index == 6)?
-                      BorderRadius.only(topRight: Radius.circular(24), bottomRight: Radius.circular(24)):
-                      BorderRadius.zero
-                    ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(days[index], style: bodyTextStyle),
-                  ),
-                ),
-              );
-            },
-          )
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){},
+        backgroundColor: blackColor,
+        shape: CircleBorder(side: BorderSide(color: primaryColor),),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.photo_camera, color: yellowColor,)
+          ],
         ),
-        Expanded(
-          child: FutureBuilder<List?>(
-            future: getData(),
-            builder: (context, snapshot){
-              if(snapshot.connectionState == ConnectionState.active || snapshot.connectionState == ConnectionState.done) {
-                int n = snapshot.data?[selectedDay].length;
-                return ListView.builder(
-                  scrollDirection: Axis.vertical,
-                  itemCount: n+1,
+      ),
+      backgroundColor: blackColor,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            height: 60,
+            decoration: BoxDecoration(
+              color: secondaryColor,
+              borderRadius: BorderRadius.all(Radius.circular(24))
+            ),
 
-                  itemBuilder: (context, index) {
-                    if(index<n){
-                      //Exercise exercise = Exercise.fromJson(snapshot.data?[selectedDay][index]);
-                      int id = snapshot.data?[selectedDay][index]['id'];
-                      String name = snapshot.data?[selectedDay][index]['name'];
-                      String level = snapshot.data?[selectedDay][index]['level'];
-                      String targetMuscle = snapshot.data?[selectedDay][index]['target_muscle'];
-                      String type = snapshot.data?[selectedDay][index]['type'];
-                      String desc = snapshot.data?[selectedDay][index]['desc'];
-                      bool completed;
-                      if (snapshot.data?[selectedDay][index]['completed'] != null) {
-                        completed = snapshot.data?[selectedDay][index]['completed'];
-                      }
-                      else completed = false;
+            // Days
+            child: ListView.builder(
+              itemCount: days.length,
+              scrollDirection: Axis.horizontal,
+              controller: scrollController,
+              itemBuilder: (BuildContext context, index){
+                return GestureDetector(
+                  onTap: (){
+                    setState(() {
+                      selectedDay = index;
 
-                      return ExerciseContainer(
-                        uid: uid,
-                        day: getDay(selectedDay),
-                        id: id,
-                        name: name,
-                        level: level,
-                        targetMuscle: targetMuscle,
-                        type: type,
-                        desc: desc,
-                        completed: completed,
-                      );
-                    }
-
-                    else{
-                      return Padding(
-                          padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0, bottom: 32),
-                          child: OutlinedButton(
-                            onPressed: (){
-                              // TODO: Fetch new exercises
-                              print("Fetching New Recommendations");
-                            },
-                            child: Center(child: Text('Tap to Fetch new Suggestions', style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 18, color: Colors.white70),)),
-                            ),
-                          )
-                      );
-                    }
-
-
+                    });
                   },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: (index==selectedDay) ?primaryColor: secondaryColor,
+                        borderRadius: (index==0) ?
+                        BorderRadius.only(topLeft: Radius.circular(24), bottomLeft: Radius.circular(24)) :
+                        (index == 6)?
+                        BorderRadius.only(topRight: Radius.circular(24), bottomRight: Radius.circular(24)):
+                        BorderRadius.zero
+                      ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(days[index], style: bodyTextStyle),
+                    ),
+                  ),
                 );
-              }
-              else{
-                return Center(child: (Text("Loading", style: appTitleStyle,)));
-              }
-            },
-
+              },
+            )
           ),
-        )
-      ],
+
+          // Exercises data
+          Expanded(
+            child: FutureBuilder<List?>(
+              future: getData(),
+              builder: (context, snapshot){
+                if(snapshot.connectionState == ConnectionState.active || snapshot.connectionState == ConnectionState.done) {
+                  int n = snapshot.data?[selectedDay].length;
+                  return ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    itemCount: n+1,
+
+                    itemBuilder: (context, index) {
+                      if(index<n){
+                        //Exercise exercise = Exercise.fromJson(snapshot.data?[selectedDay][index]);
+                        int id = snapshot.data?[selectedDay][index]['id'];
+                        String name = snapshot.data?[selectedDay][index]['name'];
+                        String level = snapshot.data?[selectedDay][index]['level'];
+                        String targetMuscle = snapshot.data?[selectedDay][index]['target_muscle'];
+                        String type = snapshot.data?[selectedDay][index]['type'];
+                        String desc = snapshot.data?[selectedDay][index]['desc'];
+                        bool completed;
+                        if (snapshot.data?[selectedDay][index]['completed'] != null) {
+                          completed = snapshot.data?[selectedDay][index]['completed'];
+                        }
+                        else completed = false;
+
+                        return ExerciseContainer(
+                          uid: uid,
+                          day: getDay(selectedDay),
+                          id: id,
+                          name: name,
+                          level: level,
+                          targetMuscle: targetMuscle,
+                          type: type,
+                          desc: desc,
+                          completed: completed,
+                        );
+                      }
+
+                      else{
+                        return Padding(
+                            padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0, bottom: 32),
+                            child: OutlinedButton(
+                              onPressed: (){
+                                // TODO: Fetch new exercises
+                                print("Fetching New Recommendations");
+                              },
+                              child: Center(child: Text('Tap to Fetch new Suggestions', style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 18, color: Colors.white70),)),
+                              ),
+                            )
+                        );
+                      }
+                    },
+                  );
+                }
+                else{
+                  return Center(child: (Text("Loading", style: appTitleStyle,)));
+                }
+              },
+
+            ),
+          )
+        ],
+      ),
     );
   }
 

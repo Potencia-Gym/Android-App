@@ -52,7 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, String?>{
-        'uid': 'CZkzL2ox5nVqZ7QIsnxwUY7ISKJ3',
+        'uid': uid,
         'name': (name!=null)?name:'User',
         'email': email
       }),
@@ -61,7 +61,9 @@ class _LoginScreenState extends State<LoginScreen> {
     var body = jsonDecode(response.body);
     print(body['information'].toString());
     if (response.statusCode==200){
-      Navigator.pushReplacementNamed(context, '/home', arguments: RouteArguments(0));
+      RouteArguments args = RouteArguments(0);
+      args.uid = body['uid'];
+      Navigator.pushReplacementNamed(context, '/home', arguments: args);
     }
     else if(response.statusCode==201){
       RouteArguments args = RouteArguments(0);

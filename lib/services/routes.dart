@@ -16,11 +16,11 @@ class RouteGenerator{
       case '/login':
         return MaterialPageRoute(builder: (_) => LoginScreen());
       case '/home':
-        return MaterialPageRoute(builder: (_) => HomeScreen());
+        return MaterialPageRoute(builder: (_) => HomeScreen(uid: args.uid));
       case '/personDetails':
         return MaterialPageRoute(builder: (_) => PersonDetailsScreen(uid: args.uid, name: args.name, email: args.email));
       case '/workoutDetails':
-        return MaterialPageRoute(builder: (_) => WorkoutDetails());
+        return MaterialPageRoute(builder: (_) => WorkoutDetails(uid: args.uid,));
       default:
         return errorRoute();
     }

@@ -28,8 +28,10 @@ class _SplashScreenState extends State<SplashScreen> {
           User? user = FirebaseAuth.instance.currentUser;
           if(user!=null) {
             print("User Found");
+            RouteArguments args = RouteArguments(0);
+            args.uid = user.uid;
             Navigator.pushReplacementNamed(
-                context, '/home', arguments: RouteArguments(0));
+                context, '/home', arguments: args);
           }
           else{
             print("User not found");

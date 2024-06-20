@@ -14,10 +14,10 @@ import 'package:potencia/services/routes.dart';
 import '../services/google_accounts.dart';
 
 class ProfileFragment extends StatefulWidget {
-  String? uid;
+  String uid;
   String? name;
   String? email;
-  ProfileFragment({super.key, this.uid, this.name, this.email});
+  ProfileFragment({super.key, required this.uid, this.name, this.email});
 
   @override
   State<ProfileFragment> createState() => _ProfileFragmentState();
@@ -28,9 +28,9 @@ class _ProfileFragmentState extends State<ProfileFragment> {
   bool p1 = false;
   bool p2 = false;
 
-  String? uid;
-  String? name;
-  String? email;
+  String uid = '';
+  String name =  '';
+  String email = '';
 
   var image1;
   var image2;
@@ -67,9 +67,7 @@ class _ProfileFragmentState extends State<ProfileFragment> {
       },
       // TODO: replace uid
       body: jsonEncode(<String, dynamic>{
-        'uid': 'CZkzL2ox5nVqZ7QIsnxwUY7ISKJ3',
-        'name': (name!=null)?name:'User',
-        'email': email
+        'uid': uid,
       }),
     );
     var body = jsonDecode(response.body);
@@ -189,9 +187,6 @@ class _ProfileFragmentState extends State<ProfileFragment> {
     // TODO: implement initState
     super.initState();
     uid = widget.uid;
-    name = widget.name;
-    email = widget.email;
-
     getData();
   }
 

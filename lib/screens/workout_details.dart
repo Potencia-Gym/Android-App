@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:potencia/constants/api.dart';
 import 'package:potencia/constants/colors.dart';
 import 'package:potencia/constants/datasets.dart';
 import 'package:potencia/constants/styles.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:potencia/services/routes.dart';
 
 class WorkoutDetails extends StatefulWidget {
-  const WorkoutDetails({super.key});
+  String uid;
+
+  WorkoutDetails({super.key, required this.uid});
 
   @override
   State<WorkoutDetails> createState() => _WorkoutDetailsState();
@@ -20,9 +25,15 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
 
   String phase = '';
 
+  String uid = '';
+
   List<String> selectedData = [];
 
   List <String> data = [];
+
+  String level = '';
+  List<String> goals = [];
+  List<String> muscles = [];
 
   void loadData(){
     print(step);
@@ -45,8 +56,34 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    uid = widget.uid;
     step = 0;
     loadData();
+  }
+
+  void sendData() async{
+    print("Posting");
+    for(String x in selectedData){
+      if(levels.contains(x)) level = x;
+      if(targetMuscles.contains(x)) muscles.add(x);
+      if(types.contains(x)) goals.add(x);
+    }
+
+
+    var response = await http.post(
+      Uri.parse(signUpRoute),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic?>{
+        'uid': uid,
+        'workoutLevel': level,
+        'workoutGoal' : goals,
+        'targetMuscle' : muscles,
+      }),
+    );
+    print(response.statusCode);
+    print(response.body);
   }
 
 
@@ -123,6 +160,7 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
                                           if(step!=0) {
                                             if (selectedData.contains(item)) {
                                               selectedData.remove(item);
+
                                             }
                                             else {
                                               selectedData.add(item);
@@ -172,7 +210,10 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
                             loadData();
                           }
                           else{
-                            Navigator.pushReplacementNamed(context, '/home', arguments: RouteArguments(0));
+                            sendData();
+                            RouteArguments args = RouteArguments(0);
+                            args.uid = uid;
+                            Navigator.pushReplacementNamed(context, '/home', arguments: args);
                           }
                         });
                       },

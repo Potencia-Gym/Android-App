@@ -79,7 +79,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
     profilePic = user?.photoURL as String;
   }
 
-  void sendData(String height, String weight, String age, String gender) async{
+  void sendData(String height, String weight, String age) async{
     print("Posting");
     var response = await http.post(
       Uri.parse(signUpRoute),
@@ -90,7 +90,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
         'uid': uid,
         'height': height,
         'weight' : weight,
-        'gender' : gender.toLowerCase(),
+        'age' : age,
       }),
     );
     print(response.statusCode);
@@ -203,9 +203,11 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                                 SystemChannels.textInput.invokeMethod('TextInput.hide');
 
                                 // send data
-
+                                sendData(heightController.text, weightController.text, ageController.text);
                                 // navigate
-                                Navigator.pushReplacementNamed(context, '/workoutDetails', arguments: RouteArguments(0));
+                                RouteArguments args = RouteArguments(0);
+                                args.uid = uid;
+                                Navigator.pushReplacementNamed(context, '/workoutDetails', arguments: args);
                               }
                               break;
                           }
