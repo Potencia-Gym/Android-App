@@ -71,7 +71,7 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
 
 
     var response = await http.post(
-      Uri.parse(signUpRoute),
+      Uri.parse(detailsRoute),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

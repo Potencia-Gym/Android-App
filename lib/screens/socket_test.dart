@@ -25,6 +25,10 @@ class _SocketScreenState extends State<SocketScreen> {
 
   late var frame;
 
+  var msg;
+  String left = '0';
+  String right = '0';
+
 
   void initCameras()async{
     _cameras = await availableCameras();
@@ -50,10 +54,29 @@ class _SocketScreenState extends State<SocketScreen> {
     controller.setFocusMode(FocusMode.locked);
   }
 
+  void testSocket(){
+    print('Connecting...');
+    socket = Io.io("http://192.168.0.97:8000/",<String,dynamic>{
+      'autoConnect':false,
+      'transports': ['websocket'],
+    });
+    socket.connect();
+    socket.onConnect((_) {
+      print('connect');
+      // socket.emit('send_frame', 'test');
+    });
+    socket.onConnectError((data) => print(data.toString()));
+    socket.on("connect", (data) => print('connected'));
+  }
+
+  void testEmit(){
+    socket.emit('send_frame','hi');
+    socket.on('message', (data) => print(data));
+  }
 
   void connectSocket(){
     print('Connecting...');
-    socket = Io.io("http://192.168.0.104:8000",<String,dynamic>{
+    socket = Io.io("https://d7bz6z99-8000.inc1.devtunnels.ms/",<String,dynamic>{
       'autoConnect':false,
       'transports': ['websocket'],
     });
@@ -75,10 +98,17 @@ class _SocketScreenState extends State<SocketScreen> {
     });
   }
 
-
   void emitFrame(String imgFrame){
     // print(imgFrame);
     socket.emit('send_frame',imgFrame);
+    socket.on('message', (data) {
+      setState(() {
+        msg = jsonDecode(data);
+        left = msg['left_count'];
+        right = msg['right_count'];
+      });
+      print(data);
+    });
   }
 
   @override
@@ -87,16 +117,12 @@ class _SocketScreenState extends State<SocketScreen> {
     super.initState();
     connectSocket();
     initCameras();
-
+    // testSocket();
     socket.on('message', (data) {
       print(data);
     });
 
   }
-
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -104,13 +130,15 @@ class _SocketScreenState extends State<SocketScreen> {
       child: Scaffold(
         body: Column(
           children: [
-            CameraPreview(controller),
+            // CameraPreview(controller),
+            Text(msg),
             TextButton(
               onPressed: (){
                 // take_picture();
                 Timer.periodic(Duration(milliseconds: 5), (timer) {
                   take_picture();
                   // print(DateTime.now());
+
                 });
               },
               child: Text("Send"),

@@ -1,9 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:potencia/constants/api.dart';
 import 'package:potencia/constants/colors.dart';
@@ -31,13 +34,15 @@ class _ProfileFragmentState extends State<ProfileFragment> {
   String uid = '';
   String name =  '';
   String email = '';
+  String bannerImage = '';
+  String profileImage = '';
 
   var image1;
   var image2;
 
-  String weight = '';
-  String height = '';
-  String age = '';
+  var weight = '';
+  var height = '';
+  var age = '';
 
   List selectedLevels = [];
   List selectedTypes = [];
@@ -51,8 +56,9 @@ class _ProfileFragmentState extends State<ProfileFragment> {
 
   void getImage(var img, bool p) async{
     var temp = await ImagePicker().pickImage(source: ImageSource.gallery);
+    print('hello');
     if(temp!=null) {
-      setState(() {
+      setState(() async{
         p = true;
         img = File(temp.path);
       });
@@ -61,40 +67,96 @@ class _ProfileFragmentState extends State<ProfileFragment> {
 
   void getData() async{
     var response = await http.post(
-      Uri.parse(signInRoute),
+      Uri.parse(detailsRoute),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      // TODO: replace uid
       body: jsonEncode(<String, dynamic>{
         'uid': uid,
       }),
     );
     var body = jsonDecode(response.body);
     print(response.statusCode);
-    print(body['information'].toString());
+    print(body.toString());
     setState((){
+      email = body['email'];
+      name = body['name'];
+      bannerImage = body['bannerImage'];
+      profileImage = body['profileImage'];
       weight = body['information']['weight'];
       height = body['information']['height'];
       age = body['information']['age'];
 
-      level = body['information']['workoutLevel'];
+      level = body['information']['workoutLevel'][0];
       selectedLevels.add(level);
-      print(body['information']['workoutGoal'].toString());
-      // Map<String, dynamic> map;
 
-      //
-      // for(var tm in body['information']['targetMuscle']){
-      //   muscles += tm.toString() + ', ';
-      // }
+      selectedTypes = body['information']['workoutGoal'];
+      for(var tm in selectedTypes){
+        type += tm.toString() + ', ';
+      }
+      type = type.substring(0,type.length-2);
+
+      selectedMuscles = body['information']['targetMuscle'];
+      for(var tm in selectedMuscles){
+        muscle += tm.toString() + ', ';
+      }
+      muscle = muscle.substring(0,muscle.length-2);
     });
   }
 
-  void personalDetailsDialog(String param, String value){
+  void listToString(String param, List value){
+
+    setState(() {
+      if (param == 'workoutGoal') {
+        selectedTypes = value;
+        type = ' ';
+        for(var tm in selectedTypes){
+          type += tm.toString() + ', ';
+        }
+        type = type.substring(0,type.length-2);
+      }
+      else{
+        selectedMuscles = value;
+        muscle = ' ';
+        for(var tm in selectedMuscles){
+          muscle += tm.toString() + ', ';
+        }
+        muscle = muscle.substring(0,muscle.length-2);
+      }
+
+    });
+
+  }
+
+  void sendData(String param, dynamic value) async{
+    print("Posting:$param->$value");
+    var response = await http.post(
+      Uri.parse(detailsRoute),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'uid': uid,
+        param: value,
+      }),
+    );
+    print(jsonDecode(response.body));
+    if(response.statusCode == 200) {
+      setState(() {
+        if (param == 'weight') weight = jsonDecode(response.body)['information']['weight'];
+        if (param == 'height') height = jsonDecode(response.body)['information']['height'];
+        if (param == 'age') age = jsonDecode(response.body)['information']['age'];
+        if (param == 'workoutLevel') level = value[0];
+        else listToString (param, value);
+      });
+    }
+  }
+
+  Future personalDetailsDialog(String param, String value) async{
     showDialog(
         context: context,
-        builder: (BuildContext context){
-          return AlertDialog(
+        builder: (BuildContext context) =>StatefulBuilder(
+          builder:(context, setState)=>  AlertDialog(
             title: Text('Update $param', style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 24, color: primaryColor))),
             backgroundColor: secondaryColor,
             content: TextField(
@@ -112,15 +174,20 @@ class _ProfileFragmentState extends State<ProfileFragment> {
             ),
             actions: [
               TextButton(
-                onPressed: (){},
+                onPressed: (){
+                  sendData(param.toLowerCase(), controller.text);
+                  this.setState(() {});
+                  Navigator.pop(context);
+                  this.setState(() {});
+                },
                 style: flatButtonStyle,
                 child: Text('Update',
                   style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 16, color: tertiaryColor)),
                 ),
               )
             ],
-          );
-        }
+          )
+        )
     );
   }
 
@@ -140,7 +207,7 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                         value: selectedData.contains(item),
                         onChanged: (value) {
                           setState(() {
-                            if (param != 'level') {
+                            if (param != 'Level') {
                               if (selectedData.contains(item)) {
                                 selectedData.remove(item);
                               }
@@ -166,9 +233,19 @@ class _ProfileFragmentState extends State<ProfileFragment> {
               ),
               actions: [
                 TextButton(
-                  onPressed: () {
+                  onPressed: ()async {
                     this.setState(() {});
+                    if(param=='Level') {
+                      sendData('workoutLevel', selectedData);
+                    }
+                    if(param=='Workout Goals') {
+                      sendData('workoutGoal', selectedData);
+                    }
+                    if(param=='Target Muscles') {
+                      sendData('targetMuscle', selectedData);
+                    }
                     Navigator.pop(context);
+                    this.setState(() {});
                   },
                   style: flatButtonStyle,
                   child: Text('Update',
@@ -206,6 +283,7 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                   alignment: Alignment.bottomLeft,
                   clipBehavior: Clip.none,
                   children: [
+                    // Profile Banner
                     GestureDetector(
                       onTap: () async{
                         var temp = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -214,15 +292,42 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                             p2 = true;
                             image2 = File(temp.path);
                           });
+
+                          String fileName = image2.path.split('/').last;
+                          FormData data = FormData.fromMap({
+                            "banner": await MultipartFile.fromBytes(
+                              File(temp.path).readAsBytesSync(),
+                              filename: fileName,
+                              contentType: new MediaType('image', 'jpeg')
+                            ),
+                            'uid': uid
+                          });
+
+                          Dio dio = new Dio();
+
+                          await dio.post(uploadBannerRoute, data: data).then((response) {
+                            var jsonResponse = jsonDecode(response.toString());
+                            // print(jsonResponse);
+                            setState(() {
+                              imageCache.clear();
+                              imageCache.clearLiveImages();
+                              bannerImage = jsonResponse['banner'];
+                              print(bannerImage);
+                            });
+
+                          }).catchError((error) => print(error));
+
                         }
                       },
                       child: Container(
                         color: primaryColor,
                         width: double.infinity,
                         height: 140,
-                        child: (p2)?Image.file(image2, fit: BoxFit.fitWidth,):Icon(Icons.photo_camera_back, size: 64,),
+                        child: (bannerImage!='')?Image.network(bannerImage, fit: BoxFit.fitWidth, key: ValueKey(new Random().nextInt(100)),):(p2)?Image.file(image2, fit: BoxFit.fitWidth,):Icon(Icons.photo_camera_back, size: 64,),
                       ),
                     ),
+
+                    // Profile Pic
                     Positioned(
                       top: 80,
                       left: 16,
@@ -234,12 +339,39 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                               p1 = true;
                               image1 = File(temp.path);
                             });
+
+                            String fileName = image1.path.split('/').last;
+                            FormData data = FormData.fromMap({
+                              "profile": await MultipartFile.fromBytes(
+                                  File(temp.path).readAsBytesSync(),
+                                  filename: fileName,
+                                  contentType: new MediaType('image', 'jpeg')
+                              ),
+                              'uid': uid
+                            });
+
+                            Dio dio = new Dio();
+
+                            dio.post(uploadProfileRoute, data: data).then((response) {
+                              var jsonResponse = jsonDecode(response.toString());
+                              imageCache.clear();
+                              imageCache.clearLiveImages();
+                              setState(() {
+                                profileImage = jsonResponse['profile'];
+                              });
+
+                              print(jsonResponse);
+                            }).catchError((error) => print(error));
+
                           }
                         },
                         child: CircleAvatar(
                           radius: 50,
                           backgroundColor: Colors.black,
-                          child: (p1)?Padding(
+                          child: (profileImage!='')?Padding(
+                            padding: const EdgeInsets.all(0),
+                            child: CircleAvatar(backgroundImage: NetworkImage(profileImage+'#'+ DateTime.now().millisecondsSinceEpoch.toString(),), radius: 46,),
+                          ):(p1)?Padding(
                             padding: const EdgeInsets.all(0),
                             child: CircleAvatar(backgroundImage: FileImage(image1), radius: 46,),
                           ):Icon(Icons.camera_alt_outlined, size: 48),
@@ -251,17 +383,20 @@ class _ProfileFragmentState extends State<ProfileFragment> {
 
                 Column(
                   children: [
+                    // Name
                     Padding(
                       padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 32),
                       child: Text(
-                        (name!=null)? name!:'Your Name',
+                        name,
                         style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 32, color: primaryColor)),
                       ),
                     ),
+
+                    // Email
                     Padding(
                       padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 4.0),
                       child: Text(
-                        email!,
+                        email,
                         style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 16, color: secondaryColor)),
                       ),
                     ),
@@ -277,7 +412,7 @@ class _ProfileFragmentState extends State<ProfileFragment> {
           delegate: SliverChildBuilderDelegate((BuildContext context, int index){
 
             // Personal Details
-            if(index==0){
+            if(index ==0){
               return Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
@@ -291,11 +426,16 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+
                         // Title
                         Text('Personal Details', style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 22, color: tertiaryColor)),),
 
+                        // Weight
                         GestureDetector(
-                          onTap: (){personalDetailsDialog('Weight',weight);},
+                          onTap: () async{
+                            await personalDetailsDialog('Weight',weight);
+                            setState(() {});
+                          },
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 1),
                             child: Container(
@@ -310,8 +450,12 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                           ),
                         ),
 
+                        // Height
                         GestureDetector(
-                          onTap: (){personalDetailsDialog('Height',height);},
+                          onTap: () async{
+                            await personalDetailsDialog('Height',height);
+                            setState(() {});
+                          },
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 1),
                             child: Container(
@@ -326,8 +470,12 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                           ),
                         ),
 
+                        // Age
                         GestureDetector(
-                          onTap: (){personalDetailsDialog('Age',age);},
+                          onTap: () async{
+                            await personalDetailsDialog('Age',age);
+                            setState(() {});
+                          },
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 1),
                             child: Container(
@@ -363,6 +511,7 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+
                         // Title
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -375,9 +524,10 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                           ],
                         ),
 
+                        // Level
                         GestureDetector(
                           onTap: () async{
-                            await workOutDetailsDialog('level', levels, selectedLevels);
+                            await workOutDetailsDialog('Level', levels, selectedLevels);
                             setState(() {});
                             print(selectedLevels[0]);
                           },
@@ -389,13 +539,13 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                                   borderRadius: BorderRadius.all(Radius.circular(16))),
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: Text('Level: ${selectedLevels[0]}', style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14, color: primaryColor)),),
+                                child: Text('Level: ${level}', style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14, color: primaryColor)),),
                               ),
                             ),
                           ),
                         ),
 
-
+                        // Workout Goal
                         GestureDetector(
                           onTap: () async{
                             await workOutDetailsDialog('Workout Goals', types, selectedTypes);
@@ -415,7 +565,7 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                           ),
                         ),
 
-
+                        // Target Muscle
                         GestureDetector(
                           onTap: () async{
                             await workOutDetailsDialog('Target Muscles', targetMuscles, selectedMuscles);
@@ -442,7 +592,7 @@ class _ProfileFragmentState extends State<ProfileFragment> {
               );
             }
 
-            // Signout
+            // SignOut
             else{
               return Center(
                 child: TextButton(

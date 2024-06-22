@@ -121,7 +121,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
               DailyGoalsFragment(),
 
-              // ProfileFragment(uid: uid, name: user!.displayName, email: user!.email,),
+              ProfileFragment(uid: uid),
 
             ],
           ),

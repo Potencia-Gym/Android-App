@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Potencia',
-      home:const SocketScreen(),
+      home:const SplashScreen(),
       onGenerateRoute: RouteGenerator.generateRoute,
       theme: myTheme,
     );

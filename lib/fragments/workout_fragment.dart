@@ -74,9 +74,6 @@ class _WorkoutFragmentState extends State<WorkoutFragment> {
       // TODO: replace uid
       body: jsonEncode(<String, dynamic>{
         'uid': 'CZkzL2ox5nVqZ7QIsnxwUY7ISKJ3',
-        'target_muscle': target_muscle,
-        'level': level,
-        'type': type,
       }),
     );
     var body = jsonDecode(response.body);

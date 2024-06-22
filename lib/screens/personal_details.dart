@@ -82,7 +82,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
   void sendData(String height, String weight, String age) async{
     print("Posting");
     var response = await http.post(
-      Uri.parse(signUpRoute),
+      Uri.parse(detailsRoute),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

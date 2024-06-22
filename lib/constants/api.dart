@@ -10,11 +10,15 @@ const String api = "https://potencia-backend.netlify.app/api/";
 
 const String exc = "https://potencia-backend.netlify.app/api/exercises";
 
-const String signUpRoute = "${api}user/details";
+const String detailsRoute = "${api}user/details";
 
-const String signInRoute = "${api}user";
+const String userRoute = "${api}user";
 
 const String markExerciseRoute = "${api}exercises/mark";
+
+const String uploadProfileRoute = "${api}user/uploadprofile";
+
+const String uploadBannerRoute = "${api}user/uploadbanner";
 
 // firebase signup
 // check for user and get existing data --> api/user  (200 if exercises exists or else 201)

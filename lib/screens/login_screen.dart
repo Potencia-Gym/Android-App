@@ -47,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void redirect(String? uid, String? name, String? email) async{
     var response = await http.post(
-      Uri.parse(signInRoute),
+      Uri.parse(userRoute),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
