@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'dart:convert';
 import 'package:potencia/constants/api.dart';
 import 'package:potencia/constants/colors.dart';
 import 'package:potencia/constants/datasets.dart';
 import 'package:potencia/constants/styles.dart';
 import 'package:potencia/components/exercise_container.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:potencia/services/routes.dart';
 
 
 class WorkoutFragment extends StatefulWidget {
@@ -63,21 +63,17 @@ class _WorkoutFragmentState extends State<WorkoutFragment> {
 
     print("Sending request");
 
-    User? user = await FirebaseAuth.instance.currentUser;
-
-    print(user?.uid.toString());
     var response = await http.post(
-      Uri.parse('${devML}'),
+      Uri.parse('${fetchExerciseRoute}'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      // TODO: replace uid
       body: jsonEncode(<String, dynamic>{
-        'uid': 'CZkzL2ox5nVqZ7QIsnxwUY7ISKJ3',
+        'uid': uid,
       }),
     );
     var body = jsonDecode(response.body);
-    print(body.toString());
+
     mon = body['monday'];
     tue = body['tuesday'];
     wed = body['wednesday'];
@@ -98,6 +94,22 @@ class _WorkoutFragmentState extends State<WorkoutFragment> {
 
   }
 
+  void fetchRecommendation() async{
+    var response = await http.post(
+      Uri.parse('${newExerciseRoute}'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      // TODO: replace uid
+      body: jsonEncode(<String, dynamic>{
+        'uid': uid,
+      }),
+    );
+    var body = jsonDecode(response.body);
+    print(body.toString());
+
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -106,7 +118,6 @@ class _WorkoutFragmentState extends State<WorkoutFragment> {
     setState(() {
       selectedDay = (date.weekday +6)%7;
     });
-    print(selectedDay);
     super.initState();
   }
 
@@ -114,7 +125,12 @@ class _WorkoutFragmentState extends State<WorkoutFragment> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: (){},
+        onPressed: (){
+          print('fab');
+          RouteArguments args = RouteArguments(0);
+          Navigator.pushNamed(
+              context, '/equipment', arguments: RouteArguments(0));
+        },
         backgroundColor: blackColor,
         shape: CircleBorder(side: BorderSide(color: primaryColor),),
         child: Row(
@@ -145,7 +161,6 @@ class _WorkoutFragmentState extends State<WorkoutFragment> {
                   onTap: (){
                     setState(() {
                       selectedDay = index;
-
                     });
                   },
                   child: Container(
@@ -213,6 +228,8 @@ class _WorkoutFragmentState extends State<WorkoutFragment> {
                               onPressed: (){
                                 // TODO: Fetch new exercises
                                 print("Fetching New Recommendations");
+                                fetchRecommendation();
+
                               },
                               child: Center(child: Text('Tap to Fetch new Suggestions', style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 18, color: Colors.white70),)),
                               ),
@@ -223,7 +240,7 @@ class _WorkoutFragmentState extends State<WorkoutFragment> {
                   );
                 }
                 else{
-                  return Center(child: (Text("Loading", style: appTitleStyle,)));
+                  return Center(child: (Text("Loading...", style: appTitleStyle,)));
                 }
               },
 

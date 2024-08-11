@@ -22,53 +22,15 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
 
   int pageIndex = 0;
-  User? user;
   late String uid;
 
   PageController controller = PageController();
-
-  void getCurrentUser() async{
-    user = await FirebaseAuth.instance.currentUser;
-    print(user!.uid);
-    uid = user!.uid;
-  }
-
-  Widget getFragment(){
-    switch(pageIndex){
-      case 0:
-        return WorkoutFragment(uid: 'CZkzL2ox5nVqZ7QIsnxwUY7ISKJ3');
-      case 1:
-        return DailyGoalsFragment();
-      case 2:
-        return ProfileFragment(uid: user!.uid, name: user!.displayName, email: user!.email,);
-      default:
-        return Center(
-              child: Column(
-                children: [
-                  TextButton(
-                    onPressed: () async{
-                      await signOutWithGoogle();
-                      RouteArguments arg = RouteArguments(0);
-                      arg.uid = "";
-
-                      Navigator.pushReplacementNamed(context, '/login', arguments: arg);
-                    },
-                    child: Text("Signout"),
-                  ),
-                ],
-              ),
-
-        );
-    }
-
-  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     uid = widget.uid;
-    // getCurrentUser();
   }
 
   @override
@@ -90,6 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Icon(LineAwesome.dumbbell_solid, size: 32),
                 label: 'Workouts',
               ),
+
               CurvedNavigationBarItem(
                 child: Icon(LineAwesome.bullseye_solid, size: 32,),
                 label: 'Daily Goals',
@@ -119,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               WorkoutFragment(uid: uid),
 
-              DailyGoalsFragment(),
+              DailyGoalsFragment(uid: uid),
 
               ProfileFragment(uid: uid),
 
@@ -127,12 +90,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         )
     );
-  }
-
-  void logout()async{
-    await signOutWithGoogle();
-    RouteArguments arg = RouteArguments(0);
-    Navigator.pushReplacementNamed(context, '/login', arguments: arg);
   }
 
 

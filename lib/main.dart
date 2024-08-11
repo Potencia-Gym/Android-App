@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:potencia/constants/styles.dart';
 import 'package:potencia/firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:potencia/screens/equiment_screen.dart';
 import 'package:potencia/screens/home_screen.dart';
 import 'package:potencia/screens/login_screen.dart';
 import 'package:potencia/screens/socket_test.dart';
@@ -27,8 +28,6 @@ class MyApp extends StatelessWidget {
   MyApp({super.key});
 
   // This widget is the root of your application.
-
-
 
   @override
   Widget build(BuildContext context) {

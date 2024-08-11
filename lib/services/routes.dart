@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:potencia/screens/equiment_screen.dart';
 import 'package:potencia/screens/home_screen.dart';
 import 'package:potencia/screens/login_screen.dart';
 import 'package:potencia/screens/personal_details.dart';
+import 'package:potencia/screens/socket_test.dart';
 import 'package:potencia/screens/splash_screen.dart';
+import 'package:potencia/screens/video_stream.dart';
 import 'package:potencia/screens/workout_details.dart';
 
 class RouteGenerator{
@@ -21,6 +24,10 @@ class RouteGenerator{
         return MaterialPageRoute(builder: (_) => PersonDetailsScreen(uid: args.uid, name: args.name, email: args.email));
       case '/workoutDetails':
         return MaterialPageRoute(builder: (_) => WorkoutDetails(uid: args.uid,));
+      case '/stream':
+        return MaterialPageRoute(builder: (_) => VideoStream(uid: args.uid, title: args.name,),);
+      case '/equipment':
+        return MaterialPageRoute(builder: (_) => EquipmentScreen());
       default:
         return errorRoute();
     }

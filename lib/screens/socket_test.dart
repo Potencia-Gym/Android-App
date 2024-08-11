@@ -25,14 +25,14 @@ class _SocketScreenState extends State<SocketScreen> {
 
   late var frame;
 
-  var msg;
+  var msg = '';
   String left = '0';
   String right = '0';
 
 
   void initCameras()async{
     _cameras = await availableCameras();
-    controller = CameraController(_cameras[0], ResolutionPreset.low);
+    controller = CameraController(_cameras[1], ResolutionPreset.low);
     controller.initialize().then((_) {
       if (!mounted) {
         return;
@@ -71,7 +71,12 @@ class _SocketScreenState extends State<SocketScreen> {
 
   void testEmit(){
     socket.emit('send_frame','hi');
-    socket.on('message', (data) => print(data));
+    socket.on('message', (data) {
+      setState(() {
+        msg = data;
+      });
+      print(data);
+    });
   }
 
   void connectSocket(){
@@ -103,11 +108,11 @@ class _SocketScreenState extends State<SocketScreen> {
     socket.emit('send_frame',imgFrame);
     socket.on('message', (data) {
       setState(() {
-        msg = jsonDecode(data);
-        left = msg['left_count'];
-        right = msg['right_count'];
+        // msg = jsonDecode(data);
+        // left = msg['left_count'];
+        // right = msg['right_count'];
       });
-      print(data);
+      print(jsonDecode(data));
     });
   }
 
@@ -115,12 +120,13 @@ class _SocketScreenState extends State<SocketScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    connectSocket();
+    // connectSocket();
     initCameras();
-    // testSocket();
-    socket.on('message', (data) {
-      print(data);
-    });
+    testSocket();
+    // socket.on('message', (data) {
+    //   print(data);
+    //
+    // });
 
   }
 
@@ -136,9 +142,9 @@ class _SocketScreenState extends State<SocketScreen> {
               onPressed: (){
                 // take_picture();
                 Timer.periodic(Duration(milliseconds: 5), (timer) {
-                  take_picture();
+                  // take_picture();
                   // print(DateTime.now());
-
+                  testEmit();
                 });
               },
               child: Text("Send"),

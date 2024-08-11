@@ -2,9 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:potencia/constants/colors.dart';
 import 'package:potencia/constants/styles.dart';
+import 'package:potencia/services/routes.dart';
 
 class StreakContainer extends StatelessWidget {
-  const StreakContainer({super.key});
+
+  String uid;
+  String title;
+  String reps;
+
+  StreakContainer({super.key, required this.uid ,required this.title, required this.reps});
 
   @override
   Widget build(BuildContext context) {
@@ -27,14 +33,21 @@ class StreakContainer extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Push Ups', style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 32, color: tertiaryColor)),),
+                      Text(title, style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 32, color: tertiaryColor)),),
                       // Status
-                      Text("Reps: 3 x 10", style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 16, color: yellowColor))),
+                      Text("Reps: $reps", style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 16, color: yellowColor))),
                     ],
                   ),
                   IconButton(
-                    onPressed: (){},
-                    icon: Icon(Icons.camera_alt_outlined),
+                    onPressed: (){
+                      RouteArguments args = RouteArguments(0);
+                      args.uid = uid;
+                      args.name = title;
+                      Navigator.pushNamed(
+                          context, '/stream', arguments: args);
+
+                    },
+                    icon: Icon(Icons.camera_alt_outlined, color: yellowColor,),
                     style: roundButtonStyle,
                   )
                 ],

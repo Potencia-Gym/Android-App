@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'dart:convert';
 import 'package:potencia/constants/api.dart';
 import 'package:potencia/constants/colors.dart';
 import 'package:potencia/constants/datasets.dart';
 import 'package:potencia/constants/styles.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:potencia/services/routes.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
 
 class WorkoutDetails extends StatefulWidget {
   String uid;
@@ -62,13 +62,12 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
   }
 
   void sendData() async{
-    print("Posting");
+    print("Posting Workout details");
     for(String x in selectedData){
       if(levels.contains(x)) level = x;
       if(targetMuscles.contains(x)) muscles.add(x);
       if(types.contains(x)) goals.add(x);
     }
-
 
     var response = await http.post(
       Uri.parse(detailsRoute),
@@ -83,7 +82,24 @@ class _WorkoutDetailsState extends State<WorkoutDetails> {
       }),
     );
     print(response.statusCode);
-    print(response.body);
+    if(response.statusCode == 200) fetchRecommendation();
+
+  }
+
+  void fetchRecommendation() async{
+    var response = await http.post(
+      Uri.parse('${newExerciseRoute}'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      // TODO: replace uid
+      body: jsonEncode(<String, dynamic>{
+        'uid': uid,
+      }),
+    );
+    var body = jsonDecode(response.body);
+    print(body.toString());
+
   }
 
 

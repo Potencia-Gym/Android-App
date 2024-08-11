@@ -77,12 +77,9 @@ class _ProfileFragmentState extends State<ProfileFragment> {
     );
     var body = jsonDecode(response.body);
     print(response.statusCode);
-    print(body.toString());
     setState((){
       email = body['email'];
       name = body['name'];
-      bannerImage = body['bannerImage'];
-      profileImage = body['profileImage'];
       weight = body['information']['weight'];
       height = body['information']['height'];
       age = body['information']['age'];
@@ -101,6 +98,8 @@ class _ProfileFragmentState extends State<ProfileFragment> {
         muscle += tm.toString() + ', ';
       }
       muscle = muscle.substring(0,muscle.length-2);
+      bannerImage = body['bannerImage'];
+      profileImage = body['profileImage'];
     });
   }
 
@@ -382,10 +381,11 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                 ),
 
                 Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Name
                     Padding(
-                      padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 32),
+                      padding: const EdgeInsets.only(left: 16.0, right: 8.0, top: 32),
                       child: Text(
                         name,
                         style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 32, color: primaryColor)),
@@ -394,10 +394,10 @@ class _ProfileFragmentState extends State<ProfileFragment> {
 
                     // Email
                     Padding(
-                      padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 4.0),
+                      padding: const EdgeInsets.only(left: 16.0, right: 8.0, bottom: 4.0),
                       child: Text(
                         email,
-                        style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 16, color: secondaryColor)),
+                        style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 16, color: yellowColor)),
                       ),
                     ),
                   ],
@@ -424,69 +424,104 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
 
                         // Title
                         Text('Personal Details', style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 22, color: tertiaryColor)),),
 
-                        // Weight
-                        GestureDetector(
-                          onTap: () async{
-                            await personalDetailsDialog('Weight',weight);
-                            setState(() {});
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 1),
-                            child: Container(
-                              decoration: const BoxDecoration(
-                                  color: blackColor,
-                                  borderRadius: BorderRadius.all(Radius.circular(16))),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text('Weight: $weight kgs', style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14, color: primaryColor)),),
-                              ),
-                            ),
-                          ),
-                        ),
 
-                        // Height
-                        GestureDetector(
-                          onTap: () async{
-                            await personalDetailsDialog('Height',height);
-                            setState(() {});
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 1),
-                            child: Container(
-                              decoration: const BoxDecoration(
-                                  color: blackColor,
-                                  borderRadius: BorderRadius.all(Radius.circular(16))),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text('Height: $height cms', style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14, color: primaryColor)),),
+                        Container(
+                          // decoration: const BoxDecoration(
+                          //     color: blackColor,
+                          //     borderRadius: BorderRadius.all(Radius.circular(16))),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              // Weight
+                              GestureDetector(
+                                onTap: () async{
+                                  await personalDetailsDialog('Weight',weight);
+                                  setState(() {});
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 1),
+                                  child: Container(
+                                    decoration: const BoxDecoration(
+                                        color: blackColor,
+                                        borderRadius: BorderRadius.all(Radius.circular(16))),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: RichText(
+                                        text: TextSpan(
+                                          text: 'Weight: ',
+                                          style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14, color: primaryColor)),
+                                          children: <TextSpan>[
+                                            TextSpan(text: '$weight kgs', style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14, color: yellowColor))),
+                                          ],
+                                        ),
+                                      )
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                        ),
 
-                        // Age
-                        GestureDetector(
-                          onTap: () async{
-                            await personalDetailsDialog('Age',age);
-                            setState(() {});
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 1),
-                            child: Container(
-                              decoration: const BoxDecoration(
-                                  color: blackColor,
-                                  borderRadius: BorderRadius.all(Radius.circular(16))),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text('Age: $age yrs', style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14, color: primaryColor)),),
+                              // Height
+                              GestureDetector(
+                                onTap: () async{
+                                  await personalDetailsDialog('Height',height);
+                                  setState(() {});
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 1),
+                                  child: Container(
+                                    decoration: const BoxDecoration(
+                                        color: blackColor,
+                                        borderRadius: BorderRadius.all(Radius.circular(16))),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: RichText(
+                                        text: TextSpan(
+                                            text: 'Height: ',
+                                            style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14, color: primaryColor)),
+                                            children: <TextSpan>[
+                                              TextSpan(text: '$height cms', style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14, color: yellowColor))),
+                                            ],
+                                          ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
+
+                              // Age
+                              GestureDetector(
+                                onTap: () async{
+                                  await personalDetailsDialog('Age',age);
+                                  setState(() {});
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 1),
+                                  child: Container(
+                                    decoration: const BoxDecoration(
+                                        color: blackColor,
+                                        borderRadius: BorderRadius.all(Radius.circular(16))),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: RichText(
+                                        text: TextSpan(
+                                            text: 'Age: ',
+                                            style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14, color: primaryColor)),
+                                            children: <TextSpan>[
+                                              TextSpan(text: '$age yrs', style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14, color: yellowColor))),
+                                            ],
+                                          ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
@@ -524,65 +559,96 @@ class _ProfileFragmentState extends State<ProfileFragment> {
                           ],
                         ),
 
-                        // Level
-                        GestureDetector(
-                          onTap: () async{
-                            await workOutDetailsDialog('Level', levels, selectedLevels);
-                            setState(() {});
-                            print(selectedLevels[0]);
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 1),
-                            child: Container(
-                              decoration: const BoxDecoration(
-                                  color: blackColor,
-                                  borderRadius: BorderRadius.all(Radius.circular(16))),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text('Level: ${level}', style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14, color: primaryColor)),),
+                        Container(
+                          // decoration: const BoxDecoration(
+                          //     color: blackColor,
+                          //     borderRadius: BorderRadius.all(Radius.circular(16))),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              // Level
+                              GestureDetector(
+                                onTap: () async{
+                                  await workOutDetailsDialog('Level', levels, selectedLevels);
+                                  setState(() {});
+                                  print(selectedLevels[0]);
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 1),
+                                  child: Container(
+                                    decoration: const BoxDecoration(
+                                        color: blackColor,
+                                        borderRadius: BorderRadius.all(Radius.circular(16))),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                        child: RichText(
+                                          text: TextSpan(
+                                            text: 'Level: ',
+                                            style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14, color: primaryColor)),
+                                            children: <TextSpan>[
+                                              TextSpan(text: '$level', style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14, color: yellowColor))),
+                                            ],
+                                          ),
+                                        )                              ),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                        ),
 
-                        // Workout Goal
-                        GestureDetector(
-                          onTap: () async{
-                            await workOutDetailsDialog('Workout Goals', types, selectedTypes);
-                            setState(() {});
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 1),
-                            child: Container(
-                              decoration: const BoxDecoration(
-                                  color: blackColor,
-                                  borderRadius: BorderRadius.all(Radius.circular(16))),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text('Workout Goal: $type', style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14, color: primaryColor)),),
+                              // Workout Goal
+                              GestureDetector(
+                                onTap: () async{
+                                  await workOutDetailsDialog('Workout Goals', types, selectedTypes);
+                                  setState(() {});
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 1),
+                                  child: Container(
+                                    decoration: const BoxDecoration(
+                                        color: blackColor,
+                                        borderRadius: BorderRadius.all(Radius.circular(16))),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                        child: RichText(
+                                          text: TextSpan(
+                                            text: 'Workout Goals: ',
+                                            style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14, color: primaryColor)),
+                                            children: <TextSpan>[
+                                              TextSpan(text: '$type', style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14, color: yellowColor))),
+                                            ],
+                                          ),
+                                        )                              ),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                        ),
 
-                        // Target Muscle
-                        GestureDetector(
-                          onTap: () async{
-                            await workOutDetailsDialog('Target Muscles', targetMuscles, selectedMuscles);
-                            setState(() {});
-                            print(selectedLevels[0]);
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 1),
-                            child: Container(
-                              decoration: const BoxDecoration(
-                                  color: blackColor,
-                                  borderRadius: BorderRadius.all(Radius.circular(16))),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text('Target Muscles: $muscle',overflow: TextOverflow.visible,style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14, color: primaryColor)),),
+                              // Target Muscle
+                              GestureDetector(
+                                onTap: () async{
+                                  await workOutDetailsDialog('Target Muscles', targetMuscles, selectedMuscles);
+                                  setState(() {});
+                                  print(selectedLevels[0]);
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 1),
+                                  child: Container(
+                                    decoration: const BoxDecoration(
+                                        color: blackColor,
+                                        borderRadius: BorderRadius.all(Radius.circular(16))),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                        child: RichText(
+                                          text: TextSpan(
+                                            text: 'Target Muscles: ',
+                                            style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14, color: primaryColor)),
+                                            children: <TextSpan>[
+                                              TextSpan(text: '$muscle', style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14, color: yellowColor))),
+                                            ],
+                                          ),
+                                        )                              ),
+                                  ),
+                                ),
                               ),
-                            ),
+                            ],
                           ),
                         ),
                       ],

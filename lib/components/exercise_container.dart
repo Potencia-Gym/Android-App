@@ -84,46 +84,53 @@ class _ExerciseContainerState extends State<ExerciseContainer> {
               Text('${widget.name}', style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 32, color: tertiaryColor)),),
 
               // Tags
-              Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                    child: Container(
-                      decoration: const BoxDecoration(
-                          color: blackColor,
-                          borderRadius: BorderRadius.all(Radius.circular(16))),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(widget.level, style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14, color: primaryColor)),),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                    child: Container(
-                      decoration: const BoxDecoration(
-                          color: blackColor,
-                          borderRadius: BorderRadius.all(Radius.circular(16))),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(widget.targetMuscle, style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14, color: primaryColor)),),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                    child: Container(
-                      decoration: const BoxDecoration(
-                          color: blackColor,
-                          borderRadius: BorderRadius.all(Radius.circular(16))),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(widget.type, style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14, color: primaryColor)),),
-                      ),
-                    ),
-                  ),
-                ],
+              Container(
+                height: MediaQuery.of(context).size.height*0.05,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: 3,
+                  itemBuilder: (context,index){
+                    if(index==0) return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                        child: Container(
+                          decoration: const BoxDecoration(
+                              color: blackColor,
+                              borderRadius: BorderRadius.all(Radius.circular(16))),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(widget.level, style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14, color: primaryColor)),),
+                          ),
+                        ),
+                      );
+                    else if(index==1) return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                        child: Container(
+                          decoration: const BoxDecoration(
+                              color: blackColor,
+                              borderRadius: BorderRadius.all(Radius.circular(16))),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(widget.targetMuscle, style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14, color: primaryColor)),),
+                          ),
+                        ),
+                      );
+                    else if(index==2) return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                        child: Container(
+                          decoration: const BoxDecoration(
+                              color: blackColor,
+                              borderRadius: BorderRadius.all(Radius.circular(16))),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(widget.type, style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14, color: primaryColor)),),
+                          ),
+                        ),
+                      );
+                  },
+
+                ),
               ),
+
 
               // Description
               Padding(

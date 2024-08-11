@@ -53,13 +53,10 @@ class _LoginScreenState extends State<LoginScreen> {
       },
       body: jsonEncode(<String, String?>{
         'uid': uid,
-        'name': (name!=null)?name:'User',
-        'email': email
       }),
     );
     print(response.statusCode);
     var body = jsonDecode(response.body);
-    print(body['information'].toString());
     if (response.statusCode==200){
       RouteArguments args = RouteArguments(0);
       args.uid = body['uid'];

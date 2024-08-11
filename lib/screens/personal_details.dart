@@ -1,13 +1,13 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'dart:convert';
+import 'package:potencia/components/input_details.dart';
 import 'package:potencia/constants/api.dart';
 import 'package:potencia/constants/colors.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:potencia/constants/styles.dart';
 import 'package:potencia/services/routes.dart';
+import 'package:http/http.dart' as http;
+import 'package:google_fonts/google_fonts.dart';
 
 class PersonDetailsScreen extends StatefulWidget {
 
@@ -26,8 +26,6 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
   String uid = '';
   String name = '';
   String email = '';
-  String profilePic = '';
-
 
   TextEditingController heightController = TextEditingController();
   TextEditingController weightController = TextEditingController();
@@ -41,25 +39,14 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
 
   List<String> units = ['cms', 'kgs', 'yrs'];
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    uid = widget.uid;
-    name = widget.name;
-    email = widget.email;
-    loadData();
-
-  }
-
-
-
+  // Load the detail header (Height, Weight, Age)
   void loadData(){
     print(step);
     phase = phases[step];
 
   }
 
+  // Load the detail widget (Height, Weight, Age)
   Widget loadWidget(){
     phase = units[step];
     switch (step){
@@ -74,13 +61,9 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
     }
   }
 
-  void getPic() async{
-    User? user =  await FirebaseAuth.instance.currentUser;
-    profilePic = user?.photoURL as String;
-  }
-
+  // Send Personal Details to server
   void sendData(String height, String weight, String age) async{
-    print("Posting");
+    print("Posting Personal details");
     var response = await http.post(
       Uri.parse(detailsRoute),
       headers: <String, String>{
@@ -94,9 +77,18 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
       }),
     );
     print(response.statusCode);
-    print(response.body);
   }
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    uid = widget.uid;
+    name = widget.name;
+    email = widget.email;
+    loadData();
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -155,7 +147,6 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                 // Input Field
                 Expanded(child: loadWidget()),
 
-
                 // Navigation Buttons
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -167,9 +158,6 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                         setState(() {
                           if(step>0) {
                             step--;
-                            print(heightController.text);
-                            print(weightController.text);
-                            print(ageController.text);
                             SystemChannels.textInput.invokeMethod('TextInput.hide');
                             loadData();
                           }
@@ -218,7 +206,6 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                     ),
                   ],
                 )
-
               ],
             ),
           ),
@@ -228,43 +215,6 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
   }
 }
 
-class ValueContainer extends StatelessWidget {
-  String value;
-  TextEditingController controller;
-  ValueContainer({super.key, required this.value, required this.controller});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 100,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Center(
-            child: TextField(
-              textAlign: TextAlign.center,
-              controller: controller,
-              keyboardType: TextInputType.number,
-              style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 24, color: primaryColor)),
-              cursorColor: Colors.white70,
-              decoration: const InputDecoration(
-                disabledBorder: OutlineInputBorder(borderSide: BorderSide(color: primaryColor)),
-                //enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: primaryColor)),
-                focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: primaryColor)),
-                focusColor: primaryColor,
-              ),
-            ),
-          ),
-          Text(
-            '$value',
-            style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 16, color: Colors.white54)),
-          ),
-        ],
-      )
-    ) ;
-  }
-}
 
 
 
